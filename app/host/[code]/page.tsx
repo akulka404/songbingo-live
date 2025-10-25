@@ -149,7 +149,7 @@ export default function HostDashboard() {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">🎵 {gameTitle}</h1>
-            <div className="text-lg font-mono bg-gray-100 inline-block px-4 py-2 rounded-lg">
+            <div className="text-lg font-mono bg-gray-100 inline-block px-4 py-2 rounded-lg text-black">
               Game Code: <span className="font-bold text-purple-600">{gameCode}</span>
             </div>
             <p className="text-gray-600 mt-2">Share this code with players to join!</p>
@@ -232,18 +232,6 @@ export default function HostDashboard() {
                     No calls made yet. Start by marking a question as done!
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          {/* QR Code placeholder */}
-          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              Players can join at <strong>songbingo.live</strong> with code: <strong>{gameCode}</strong>
-            </p>
-            <div className="inline-block p-4 border-2 border-dashed border-gray-300 rounded-lg">
-              <div className="w-32 h-32 bg-gray-100 flex items-center justify-center text-gray-500">
-                QR Code
               </div>
             </div>
           </div>

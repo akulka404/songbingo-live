@@ -135,8 +135,8 @@ export default function HostPage() {
               type="text"
               value={gameTitle}
               onChange={(e) => setGameTitle(e.target.value)}
-              placeholder="My Awesome Song Bingo"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Game Title"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black"
             />
           </div>
 
@@ -197,14 +197,14 @@ export default function HostPage() {
                     placeholder="Question"
                     value={item.question}
                     onChange={(e) => updateItem(index, 'question', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black"
                   />
                   <input
                     type="text"
                     placeholder="Answer"
                     value={item.answer}
                     onChange={(e) => updateItem(index, 'answer', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black"
                   />
                   <button
                     onClick={() => removeItem(index)}

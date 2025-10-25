@@ -31,7 +31,7 @@ export default function PlayerView() {
       initialBoard[row] = [];
       for (let col = 0; col < 5; col++) {
         initialBoard[row][col] = {
-          content: row === 2 && col === 2 ? 'FREE' : '',
+          content: row === 2 && col === 2 ? '' : '',
           isChecked: row === 2 && col === 2, // FREE cell is pre-checked
           isFree: row === 2 && col === 2,
         };
@@ -158,15 +158,19 @@ export default function PlayerView() {
   };
 
   const toggleCell = (row: number, col: number) => {
-    if (board[row][col].content) {
+    console.log('Cell clicked:', row, col, 'content:', board[row][col].content, 'isFree:', board[row][col].isFree);
+    // Only allow clicking on cells that have song content (not free cell and not empty)
+    if (board[row][col].content.trim() !== '' && !board[row][col].isFree) {
+      console.log('Toggling cell');
       setBoard(prevBoard => {
-        const newBoard = [...prevBoard];
-        newBoard[row][col] = {
-          ...newBoard[row][col],
-          isChecked: !newBoard[row][col].isChecked,
-        };
+        const newBoard = prevBoard.map(boardRow => boardRow.map(cell => ({ ...cell })));
+        const currentState = newBoard[row][col].isChecked;
+        newBoard[row][col].isChecked = !currentState;
+        console.log('Setting isChecked from', currentState, 'to', !currentState);
         return newBoard;
       });
+    } else {
+      console.log('Cell not toggleable - content:', board[row][col].content, 'isFree:', board[row][col].isFree);
     }
   };
 
@@ -183,54 +187,50 @@ export default function PlayerView() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">🎵 {gameTitle}</h1>
-            <div className="text-sm text-gray-600 mb-2">
+            <h1 className="text-2xl font-bold text-black mb-2">🎵 Song Bingo - {gameTitle}</h1>
+            <div className="text-sm text-black mb-2">
               Welcome, <span className="font-medium">{playerName}</span>!
             </div>
-            <div className="text-sm font-mono bg-gray-100 inline-block px-3 py-1 rounded">
-              Game: {gameCode}
+            <div className="text-sm font-mono bg-gray-100 inline-block px-3 py-1 rounded text-black">
+              Game Code: {gameCode}
             </div>
           </div>
 
           {/* Bingo Board */}
           <div className="grid grid-cols-5 gap-2 max-w-md mx-auto mb-8">
             {board.map((row, rowIndex) =>
-              row.map((cell, colIndex) => (
+              row.map((cell, colIndex) => {
+                const isHighlighted = cell.isChecked;
+                console.log(`Rendering cell [${rowIndex},${colIndex}]: content="${cell.content}", isChecked=${cell.isChecked}, isFree=${cell.isFree}`);
+                
+                return (
                 <button
                   key={`${rowIndex}-${colIndex}`}
                   onClick={() => toggleCell(rowIndex, colIndex)}
-                  disabled={!cell.content}
+                  disabled={false}
                   className={`
-                    aspect-square rounded-lg border-2 text-xs font-medium transition-all duration-300
+                    aspect-square rounded-lg text-xs font-medium transition-all duration-300
                     ${cell.isFree 
-                      ? 'bg-yellow-400 border-yellow-500 text-yellow-900' 
-                      : cell.content 
-                        ? `border-purple-300 hover:border-purple-500 ${
-                            cell.isChecked 
-                              ? 'bg-purple-600 text-white' 
-                              : 'bg-white text-gray-800 hover:bg-purple-50'
-                          }`
-                        : 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                      ? 'bg-yellow-400 border-2 border-yellow-500 text-yellow-900' 
+                      : cell.content.trim() !== ''
+                        ? isHighlighted
+                          ? 'bg-white text-gray-800 border-4 border-amber-500 shadow-lg'
+                          : 'bg-white text-gray-800 border-2 border-purple-300 hover:border-purple-500 hover:bg-purple-50'
+                        : 'bg-gray-100 border-2 border-gray-200 text-gray-400 cursor-not-allowed'
                     }
-                    ${cell.content && !cell.isFree ? 'hover:scale-105' : ''}
+                    ${cell.content.trim() !== '' && !cell.isFree ? 'hover:scale-105 cursor-pointer' : ''}
                   `}
+                  style={{
+                    borderWidth: isHighlighted && cell.content.trim() !== '' && !cell.isFree ? '4px' : '2px',
+                    borderColor: isHighlighted && cell.content.trim() !== '' && !cell.isFree ? '#f59e0b' : undefined
+                  }}
                 >
                   <div className="p-1 h-full flex items-center justify-center text-center leading-tight">
-                    {cell.content && (
-                      <>
-                        {cell.isChecked && !cell.isFree && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-2xl">✓</span>
-                          </div>
-                        )}
-                        <span className={cell.isChecked && !cell.isFree ? 'opacity-30' : ''}>
-                          {cell.content}
-                        </span>
-                      </>
-                    )}
+                    {cell.content}
                   </div>
                 </button>
-              ))
+                );
+              })
             )}
           </div>
 
@@ -240,22 +240,8 @@ export default function PlayerView() {
               Songs will appear automatically when the host calls them.
             </p>
             <p className="text-sm text-gray-600">
-              Tap songs to mark them as checked ✓
+              Tap songs to highlight the tile!
             </p>
-            <div className="flex justify-center gap-4 text-xs text-gray-500 mt-4">
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-yellow-400 rounded border"></div>
-                <span>FREE</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-white border-2 border-purple-300 rounded"></div>
-                <span>Song</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-purple-600 rounded border"></div>
-                <span>Checked</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
